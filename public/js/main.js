@@ -47,6 +47,22 @@ sprite.anchor.set(0.5);
 sprite.tint = 0x00FF00; // green
 stage.addChild(sprite);
 
+// load a frog gif
+let frogImages = ["f1.png","f2.png","f3.png","f4.png", "f5.png", "f6.png", "f7.png"];
+let textureArray = [];
+
+for (let i=0; i < 4; i++)
+{
+     let texture = PIXI.Texture.fromImage(frogImages[i]);
+     textureArray.push(texture);
+};
+
+let frogSprite = new PIXI.extras.AnimatedSprite(textureArray);
+frogSprite.animationSpeed = 0.167; 
+frogSprite.play();
+// const frogSprite = PIXI.Sprite.from('frog-walk-15.gif');
+stage.addChild(frogSprite);
+
 let spin = true;
 
 // register assistant canvas callbacks
@@ -89,7 +105,6 @@ const frame = () => {
   if (spin) {
     sprite.rotation += delta / 1000;
   }
-
   last = now;
 
   renderer.render(stage);
