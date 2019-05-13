@@ -31,8 +31,7 @@ const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 const app = dialogflow({debug: true});
 
 app.intent('welcome', (conv) => {
-  conv.ask('Welcome! Do you want me to change color or pause spinning? ' +
-    'You can also tell me to ask you later.');
+  conv.ask('Happy Mother\'s Day!');
   conv.ask(new ImmersiveResponse({
     url: `https://${firebaseConfig.projectId}.firebaseapp.com`,
   }));

@@ -18,9 +18,9 @@
 
 const view = document.getElementById('view');
 
-// set up fps monitoring
-const stats = new Stats();
-view.getElementsByClassName('stats')[0].appendChild(stats.domElement);
+// // set up fps monitoring
+// const stats = new Stats();
+// view.getElementsByClassName('stats')[0].appendChild(stats.domElement);
 
 // initialize rendering and set correct sizing
 const ratio = window.devicePixelRatio;
@@ -38,14 +38,14 @@ view.appendChild(element);
 
 // center stage and normalize scaling for all resolutions
 const stage = new PIXI.Container();
-stage.position.set(view.clientWidth / 2, view.clientHeight / 2);
+// stage.position.set(view.clientWidth / 2, view.clientHeight / 2);
 stage.scale.set(Math.max(renderer.width, renderer.height) / 1024);
 
-// load a sprite from a svg file
-const sprite = PIXI.Sprite.from('triangle.svg');
-sprite.anchor.set(0.5);
-sprite.tint = 0x00FF00; // green
-stage.addChild(sprite);
+// // load a sprite from a svg file
+// const sprite = PIXI.Sprite.from('triangle.svg');
+// sprite.anchor.set(0.5);
+// sprite.tint = 0x00FF00; // green
+// stage.addChild(sprite);
 
 // load a frog gif
 let frogImages = ["f1.png","f2.png","f3.png","f4.png", "f5.png", "f6.png", "f7.png"];
@@ -58,10 +58,35 @@ for (let i=0; i < 4; i++)
 };
 
 let frogSprite = new PIXI.extras.AnimatedSprite(textureArray);
-frogSprite.animationSpeed = 0.167; 
+var begining = -view.clientWidth/6;
+var frogOrigX = begining;
+ frogSprite.x = frogOrigX;
+ frogSprite.y = 0;//(view.clientHeight/2);//- frogSprite.height;
+// frogSprite.position.set(-30, 0)
+frogSprite.animationSpeed = 0.067; 
 frogSprite.play();
 // const frogSprite = PIXI.Sprite.from('frog-walk-15.gif');
 stage.addChild(frogSprite);
+
+var style = new PIXI.TextStyle({
+  fontFamily: 'Arial',
+  fontSize: 90,
+  fill: ['#ffffff', '#ff0263'], // gradient
+  stroke: '#010633',
+  strokeThickness: 5,
+  dropShadowAngle: Math.PI / 6,
+  dropShadowDistance: 6,
+  wordWrap: false,
+  // wordWrapWidth: 440
+});
+// 'view.clientWidth = ' + view.clientWidth + ", view.clientHeight = " + view.clientHeight +"\n"
+// + "frogSprite.width = " + frogSprite.width + ", frogSprite.height = " + frogSprite.height
+var richText = new PIXI.Text("Happy Mother's Day!", style);
+var richTextOrigX = begining + view.clientWidth/8;
+richText.x = richTextOrigX;
+richText.y = frogSprite.y + view.clientHeight/6;//frogSprite.y + (frogSprite.height/2);
+
+stage.addChild(richText);
 
 let spin = true;
 
@@ -69,9 +94,9 @@ let spin = true;
 const callbacks = {
   onUpdate(state) {
     console.log('onUpdate', JSON.stringify(state));
-    if ('tint' in state) {
-      sprite.tint = state.tint;
-    }
+    // if ('tint' in state) {
+    //   sprite.tint = state.tint;
+    // }
     if ('spin' in state) {
       spin = state.spin;
     }
@@ -85,30 +110,38 @@ const callbacks = {
 };
 assistantCanvas.ready(callbacks);
 
-// toggle spin on touch events of the triangle
-sprite.interactive = true;
-sprite.buttonMode = true;
-sprite.on('pointerdown', () => {
-  spin = !spin;
-});
+// // toggle spin on touch events of the triangle
+// sprite.interactive = true;
+// sprite.buttonMode = true;
+// sprite.on('pointerdown', () => {
+//   spin = !spin;
+// });
 
 let last = performance.now();
 // frame-by-frame animation function
 const frame = () => {
-  stats.begin();
+  // stats.begin();
 
   // calculate time differences for smooth animations
   const now = performance.now();
   const delta = now - last;
 
-  // rotate the triangle only if spin is true
-  if (spin) {
-    sprite.rotation += delta / 1000;
-  }
+  // // rotate the triangle only if spin is true
+  // if (spin) {
+  //   sprite.rotation += delta / 1000;
+  // }
   last = now;
 
+  // frogSprite.position.set(frogSprite.x + 1, frogSprite.y);
+  if (frogSprite.x > view.clientWidth) {
+    frogSprite.x = frogOrigX;
+    richText.x = richTextOrigX
+  } else {
+    frogSprite.x++;
+    richText.x++;
+  }
   renderer.render(stage);
-  stats.end();
+  // stats.end();
   requestAnimationFrame(frame);
 };
 frame();
